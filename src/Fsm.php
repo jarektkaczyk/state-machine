@@ -79,7 +79,9 @@ class Fsm
     public function process(string $action) : string
     {
         if (!$this->isActionValid($action)) {
-            throw new InvalidActionException('Provided action is not available in current state');
+            throw new InvalidActionException(
+                'Provided action [' . $action . '] is not available in current state [' . $this->state . ']'
+            );
         }
 
         $transition = $this->transitions[$this->state][$action];
