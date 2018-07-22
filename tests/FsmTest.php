@@ -20,6 +20,7 @@ class FsmTest extends TestCase
             Transition::make('idle', 'move', 'moving'),
             Transition::make('moving', 'stop', 'idle'),
             Transition::make('moving', 'turn_off', 'california_cruisin'),
+            CustomTransition::make('off', 'custom_start', 'idle'),
         ]);
     }
 
@@ -41,6 +42,13 @@ class FsmTest extends TestCase
         $this->fsm->process('turn_off');
 
         $this->assertEquals('california_cruisin', $this->stateful_object->getCurrentState());
+    }
+
+    /** @test */
+    public function it_allows_customizing_transitions_logic()
+    {
+        $this->fsm->process('custom_start', ['prop' => 'customized']);
+        $this->assertEquals('customized', $this->stateful_object->prop);
     }
 
     /**
@@ -68,6 +76,7 @@ class FsmTest extends TestCase
 class StatefulDouble implements StateMachineInterface
 {
     public $state = 'off';
+    public $prop = 'initial';
 
     public function getCurrentState() : string
     {
@@ -77,5 +86,14 @@ class StatefulDouble implements StateMachineInterface
     public function setState(string $state) : void
     {
         $this->state = $state;
+    }
+}
+
+class CustomTransition extends Transition
+{
+    public function __invoke($stateful_object, $payload)
+    {
+        $stateful_object->prop = $payload['prop'];
+        $stateful_object->setState($this->to_state);
     }
 }
