@@ -3,7 +3,7 @@
 namespace Sofa\StateMachine;
 
 /**
- * simple POPO to handle State Machine transitions
+ * Simple POPO to handle State Machine transitions
  */
 class Transition
 {
@@ -25,4 +25,13 @@ class Transition
     {
         return new static($from_state, $action, $to_state);
     }
+
+    // Extend this class and implement __invoke method to have more flexibility in your transition.
+    //
+    // public function __invoke(StateMachineInterface $stateful_object, $payload)
+    // {
+    //     // do more here if necessary
+    //
+    //     $stateful_object->setState($this->to_state);
+    // }
 }

@@ -74,9 +74,10 @@ class Fsm
      * Process action and return new state after transition.
      *
      * @param  string $action
+     * @param  mixed $payload
      * @return string
      */
-    public function process(string $action) : string
+    public function process(string $action, $payload = null) : string
     {
         if (!$this->isActionValid($action)) {
             throw new InvalidActionException(
@@ -86,7 +87,11 @@ class Fsm
 
         $transition = $this->transitions[$this->state][$action];
 
-        $this->stateful_object->setState($transition->to_state);
+        if (is_callable($transition)) {
+            $transition($this->stateful_object, $payload);
+        } else {
+            $this->stateful_object->setState($transition->to_state);
+        }
 
         return $this->state = $transition->to_state;
     }
