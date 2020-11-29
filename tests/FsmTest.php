@@ -2,14 +2,16 @@
 
 namespace Sofa\Unit\StateMachine;
 
-use Sofa\StateMachine\Fsm;
 use PHPUnit\Framework\TestCase;
-use Sofa\StateMachine\Transition;
+use Sofa\StateMachine\DuplicateActionException;
+use Sofa\StateMachine\Fsm;
+use Sofa\StateMachine\InvalidActionException;
 use Sofa\StateMachine\StateMachineInterface;
+use Sofa\StateMachine\Transition;
 
 class FsmTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -51,24 +53,20 @@ class FsmTest extends TestCase
         $this->assertEquals('customized', $this->stateful_object->prop);
     }
 
-    /**
-     * @test
-     * @expectedException Sofa\StateMachine\DuplicateActionException
-     */
+    /** @test */
     public function it_rejects_invalid_transition_definitions()
     {
+        $this->expectException(DuplicateActionException::class);
         new Fsm(new StatefulDouble, [
             Transition::make('off', 'start', 'idle'),
             Transition::make('off', 'start', 'moving'),
         ]);
     }
 
-    /**
-     * @test
-     * @expectedException Sofa\StateMachine\InvalidActionException
-     */
+    /** @test */
     public function it_rejects_invalid_action_for_processing()
     {
+        $this->expectException(InvalidActionException::class);
         $this->fsm->process('move');
     }
 }

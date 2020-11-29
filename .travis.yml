@@ -1,8 +1,8 @@
 language: php
 
 php:
-  - 7.1
-  - 7.2
+  - 7.4
+  - 8.0
 
 install:
   - travis_retry composer require php-coveralls/php-coveralls:^2.0@stable
