@@ -36,6 +36,14 @@ class FsmTest extends TestCase
     }
 
     /** @test */
+    public function it_transitions_machine_between_object_states()
+    {
+        $this->assertEquals('off', $this->fsm->getCurrentState());
+        $this->fsm->process(CustomTransition::make('off', 'custom_start', 'idle'));
+        $this->assertEquals('idle', $this->fsm->getCurrentState());
+    }
+
+    /** @test */
     public function it_puts_machine_object_in_proper_state()
     {
         $this->assertEquals('off', $this->fsm->getCurrentState());

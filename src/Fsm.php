@@ -52,12 +52,12 @@ class Fsm
     /**
      * Determine whether provided action is available in current state.
      *
-     * @param  string  $action
+     * @param  string|Transition  $action
      * @return bool
      */
-    public function isActionValid(string $action) : bool
+    public function isActionValid(string|Transition $action) : bool
     {
-        return in_array($action, $this->getAvailableActions());
+        return in_array(is_string($action) ? $action : $action->action, $this->getAvailableActions());
     }
 
     /**
@@ -73,12 +73,14 @@ class Fsm
     /**
      * Process action and return new state after transition.
      *
-     * @param  string $action
+     * @param  string|Transition $action
      * @param  mixed $payload
      * @return string
      */
-    public function process(string $action, $payload = null) : string
+    public function process(string|Transition $action, $payload = null) : string
     {
+        $action = is_string($action) ? $action : $action->action;
+
         if (!$this->isActionValid($action)) {
             throw new InvalidActionException(
                 'Provided action [' . $action . '] is not available in current state [' . $this->state . ']'
