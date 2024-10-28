@@ -75,9 +75,9 @@ class Fsm
      *
      * @param  string|Transition $action
      * @param  mixed $payload
-     * @return string
+     * @return mixed
      */
-    public function process(string|Transition $action, $payload = null) : string
+    public function process(string|Transition $action, $payload = null) : mixed
     {
         $action = is_string($action) ? $action : $action->action;
 
@@ -90,11 +90,13 @@ class Fsm
         $transition = $this->transitions[$this->state][$action];
 
         if (is_callable($transition)) {
-            $transition($this->stateful_object, $payload);
+            $returnValue = $transition($this->stateful_object, $payload);
         } else {
             $this->stateful_object->setState($transition->to_state);
         }
 
-        return $this->state = $transition->to_state;
+        $this->state = $transition->to_state;
+
+        return $returnValue ?? $this->state;
     }
 }

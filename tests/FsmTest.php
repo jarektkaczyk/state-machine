@@ -44,6 +44,14 @@ class FsmTest extends TestCase
     }
 
     /** @test */
+    public function it_returns_custom_transition_value()
+    {
+        $this->assertEquals('off', $this->fsm->getCurrentState());
+        $this->assertEquals(['custom' => 'return'], $this->fsm->process(CustomTransition::make('off', 'custom_start', 'idle')));
+        $this->assertEquals('idle', $this->fsm->getCurrentState());
+    }
+
+    /** @test */
     public function it_puts_machine_object_in_proper_state()
     {
         $this->assertEquals('off', $this->fsm->getCurrentState());
@@ -101,5 +109,7 @@ class CustomTransition extends Transition
     {
         $stateful_object->prop = $payload['prop'];
         $stateful_object->setState($this->to_state);
+
+        return ['custom' => 'return'];
     }
 }
