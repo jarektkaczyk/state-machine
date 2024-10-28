@@ -11,7 +11,7 @@
 Add package to your project:
 
 ```
-path/to/your/app$ composer require sofa/state-machine
+composer require sofa/state-machine
 ```
 
 
